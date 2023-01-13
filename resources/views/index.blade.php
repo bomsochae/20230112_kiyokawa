@@ -1,9 +1,20 @@
 @extends('layouts.default')
 @section('title', 'Todo List')
+@if (Auth::check())
 @section('user', $user->name)
+@else
+<p>ログインしてください。（<a href="/login">ログイン</a>｜<a href="/register">登録</a>）</p>
+@endif
 @section('content')
 <a class="button btn-search" href="/todo/find">タスク検索</a>
 <div class="todo">
+  @if (count($errors) > 0)
+  <ul>
+    @foreach ($errors->all() as $error)
+    <li>{{$error}}</li>
+    @endforeach
+  </ul>
+  @endif
   <form class="flex between mb-30" action="/todo/create" method="post">
     @csrf
     <input class="text-add" type="text" name="task">
