@@ -13,7 +13,7 @@ class TodoController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $todos = Todo::all();
+        $todos = Todo::where('user_id', Auth::user()->id)->get();
         $tags = Tag::all();
         $param = [
             'user'=>$user,
@@ -65,16 +65,16 @@ class TodoController extends Controller
         $task = $request->task;
         $tag_id = $request->tag_id;
         if ($task && $tag_id) {
-            $cond = [['task', 'LIKE', '%'.$task.'%'], ['tag_id', '=', $tag_id]];
+            $cond = [['task', 'LIKE', '%'.$task.'%'], ['tag_id', '=', $tag_id], ['user_id', Auth::user()->id]];
             $todos = Todo::where($cond)->get();
         } elseif ($task && !$tag_id) {
-            $cond = [['task', 'LIKE', '%'.$task.'%']];
+            $cond = [['task', 'LIKE', '%'.$task.'%'], ['user_id', Auth::user()->id]];
             $todos = Todo::where($cond)->get();
         } elseif (!$task && $tag_id) {
-            $cond = [['tag_id', '=', $tag_id]];
+            $cond = [['tag_id', '=', $tag_id], ['user_id', Auth::user()->id]];
             $todos = Todo::where($cond)->get();
         } else  {
-            $todos = Todo::all();
+            $todos = Todo::where('user_id', Auth::user()->id)->get();
         }
         $param = [
             'user'=>$user,
